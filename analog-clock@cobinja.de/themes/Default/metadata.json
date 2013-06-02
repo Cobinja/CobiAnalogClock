@@ -1,6 +1,7 @@
 {
   "size": 150,
   "body": "body.svg",
+  "clockface": "clockface.svg",
   "frame": "frame.svg",
   "hour": {"fileName": "hour.svg", "pivot-x": 1.5, "pivot-y": 33.5},
   "minute": {"fileName": "minute.svg", "pivot-x": 1.5, "pivot-y": 43.5},

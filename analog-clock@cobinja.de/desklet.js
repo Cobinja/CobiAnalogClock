@@ -229,6 +229,11 @@ CobiAnalogClock.prototype = {
         body.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(bodyFileName).get_path());
         clock.body = body;
         
+        let clockfaceFileName = metaData["clockface"];
+        let clockface = {};
+        clockface.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(clockfaceFileName).get_path());
+        clock.clockface = clockface;
+        
         let frameFileName = metaData["frame"];
         let frame = {};
         frame.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(frameFileName).get_path());
@@ -301,6 +306,12 @@ CobiAnalogClock.prototype = {
     cr.save();
     cr.scale(scale, scale);
     this._clock.body.rsvgHandle.render_cairo(cr);
+    cr.restore();
+    
+    // clockface
+    cr.save();
+    cr.scale(scale, scale);
+    this._clock.clockface.rsvgHandle.render_cairo(cr);
     cr.restore();
     
     // hour hand
