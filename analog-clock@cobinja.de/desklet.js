@@ -203,8 +203,6 @@ CobiAnalogClock.prototype = {
     this.setContent(this._clockActor);
     
     this._clock = this._loadTheme();
-    //this._upClient = new UPowerGlib.Client();
-    //this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
     
     this._signalTracker.connect({signalName: "repaint", target: this._clockActor, bind: this, callback: Lang.bind(this, this._paintClock)});
     
@@ -214,6 +212,9 @@ CobiAnalogClock.prototype = {
     
     this._signalTracker.connect({signalName: "size-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onSizeChanged)});
     this._signalTracker.connect({signalName: "theme-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onThemeChanged)});
+    
+    this._upClient = new UPowerGlib.Client();
+    this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
   },
   
   _loadTheme: function() {
