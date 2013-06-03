@@ -207,7 +207,11 @@ CobiAnalogClock.prototype = {
     //this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
     
     this._signalTracker.connect({signalName: "repaint", target: this._clockActor, bind: this, callback: Lang.bind(this, this._paintClock)});
-    this._updateClock();
+    
+    let currentMillis = new Date().getMilliseconds();
+    let timeoutMillis = (1000 - currentMillis) % 1000;
+    this._timeoutId = Mainloop.timeout_add(timeoutMillis, Lang.bind(this, this._updateClock));
+    
     this._signalTracker.connect({signalName: "size-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onSizeChanged)});
     this._signalTracker.connect({signalName: "theme-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onThemeChanged)});
   },
@@ -290,7 +294,12 @@ CobiAnalogClock.prototype = {
   _updateClock: function() {
     this._displayTime = new Date();
     this._clockActor.queue_repaint();
-    this._timeoutId = Mainloop.timeout_add_seconds(1, Lang.bind(this, this._updateClock));
+    let newTimeoutSeconds = 1;
+    if (!this._settings.values["show-seconds"]) {
+      let seconds = this._displayTime.getSeconds();
+      newTimeoutSeconds = 60 - seconds;
+    }
+    this._timeoutId = Mainloop.timeout_add_seconds(newTimeoutSeconds, Lang.bind(this, this._updateClock));
   },
   
   _paintClock: function() {
