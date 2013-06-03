@@ -222,50 +222,47 @@ CobiAnalogClock.prototype = {
     let themesDir = Gio.file_new_for_path(DESKLET_DIR + "/themes");
     let themeDir = themesDir.get_child(themeName);
     let metaDataFile = themeDir.get_child("metadata.json");
-    if (metaDataFile.query_exists(null)) {
-      let metaData = JSON.parse(Cinnamon.get_file_contents_utf8_sync(metaDataFile.get_path()));
-      
-      let clock = {"size": metaData["size"]};
-      
-      let bodyFileName = metaData["body"];
-      let body = {};
-      body.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(bodyFileName).get_path());
-      clock.body = body;
-      
-      let clockfaceFileName = metaData["clockface"];
-      let clockface = {};
-      clockface.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(clockfaceFileName).get_path());
-      clock.clockface = clockface;
-      
-      let frameFileName = metaData["frame"];
-      let frame = {};
-      frame.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(frameFileName).get_path());
-      clock.frame = frame;
-      
-      let hourFileName = metaData["hour"]["fileName"];
-      let hour = {};
-      hour.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(hourFileName).get_path());
-      hour.pivotX = metaData["hour"]["pivot-x"];
-      hour.pivotY = metaData["hour"]["pivot-y"];
-      clock.hour = hour;
-      
-      let minuteFileName = metaData["minute"]["fileName"];
-      let minute = {};
-      minute.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(minuteFileName).get_path());
-      minute.pivotX = metaData["minute"]["pivot-x"];
-      minute.pivotY = metaData["minute"]["pivot-y"];
-      clock.minute = minute;
-      
-      let secondFileName = metaData["second"]["fileName"];
-      let second = {};
-      second.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(secondFileName).get_path());
-      second.pivotX = metaData["second"]["pivot-x"];
-      second.pivotY = metaData["second"]["pivot-y"];
-      clock.second = second;
-      
-      return clock;
-    }
-    return null;
+    let metaData = JSON.parse(Cinnamon.get_file_contents_utf8_sync(metaDataFile.get_path()));
+    
+    let clock = {"size": metaData["size"]};
+    
+    let bodyFileName = metaData["body"];
+    let body = {};
+    body.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(bodyFileName).get_path());
+    clock.body = body;
+    
+    let clockfaceFileName = metaData["clockface"];
+    let clockface = {};
+    clockface.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(clockfaceFileName).get_path());
+    clock.clockface = clockface;
+    
+    let frameFileName = metaData["frame"];
+    let frame = {};
+    frame.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(frameFileName).get_path());
+    clock.frame = frame;
+    
+    let hourFileName = metaData["hour"]["fileName"];
+    let hour = {};
+    hour.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(hourFileName).get_path());
+    hour.pivotX = metaData["hour"]["pivot-x"];
+    hour.pivotY = metaData["hour"]["pivot-y"];
+    clock.hour = hour;
+    
+    let minuteFileName = metaData["minute"]["fileName"];
+    let minute = {};
+    minute.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(minuteFileName).get_path());
+    minute.pivotX = metaData["minute"]["pivot-x"];
+    minute.pivotY = metaData["minute"]["pivot-y"];
+    clock.minute = minute;
+    
+    let secondFileName = metaData["second"]["fileName"];
+    let second = {};
+    second.rsvgHandle = Rsvg.Handle.new_from_file(themeDir.get_child(secondFileName).get_path());
+    second.pivotX = metaData["second"]["pivot-x"];
+    second.pivotY = metaData["second"]["pivot-y"];
+    clock.second = second;
+    
+    return clock;
   },
   
   _onThemeChanged: function() {
