@@ -298,6 +298,7 @@ CobiAnalogClock.prototype = {
       newTimeoutSeconds = 60 - seconds;
     }
     this._timeoutId = Mainloop.timeout_add_seconds(newTimeoutSeconds, Lang.bind(this, this._updateClock));
+    return false;
   },
   
   _paintClock: function() {
@@ -351,7 +352,6 @@ CobiAnalogClock.prototype = {
       cr.scale(scale, scale);
     }
     this._clock.minute.rsvgHandle.render_cairo(cr);
-    cr.fill();
     cr.restore();
     
     // second
@@ -379,6 +379,15 @@ CobiAnalogClock.prototype = {
     cr.restore();
     
     cr.fill();
+  },
+  
+  on_desklet_removed: function() {
+    if (this._timeoutId != undefined) {
+      Mainloop.source_remove(this._timeoutId);
+    }
+    this._signalTracker.destroy();
+    this._settings.destroy();
+    
   }
 }
 
