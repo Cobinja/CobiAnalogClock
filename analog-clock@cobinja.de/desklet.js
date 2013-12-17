@@ -5,11 +5,8 @@ const Desklet = imports.ui.desklet;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-const Cairo = imports.cairo;
 const Signals = imports.signals;
-const Clutter = imports.gi.Clutter;
 const Util = imports.misc.util;
-const Calendar = imports.ui.calendar;
 const UPowerGlib = imports.gi.UPowerGlib;
 const Rsvg = imports.gi.Rsvg;
 const GLib = imports.gi.GLib;
