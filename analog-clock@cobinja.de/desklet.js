@@ -206,6 +206,9 @@ CobiAnalogClock.prototype = {
     
     this._menu.addAction(_("Settings"), Lang.bind(this, function() {Util.spawnCommandLine(DESKLET_DIR + "/settings.py " + instanceId);}));
     
+    this.metadata["prevent-decorations"] = this._settings.values["hide-decorations"];
+    this._updateDecoration();
+    
     this._clockSize = this._settings.values["size"];
     
     this._clockActor = new St.DrawingArea({width: this._clockSize + 2*MARGIN, height: this._clockSize + 2*MARGIN});
@@ -223,6 +226,7 @@ CobiAnalogClock.prototype = {
     
     this._signalTracker.connect({signalName: "size-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onSizeChanged)});
     this._signalTracker.connect({signalName: "theme-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onThemeChanged)});
+    this._signalTracker.connect({signalName: "hide-decorations-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onHideDecorationsChanged)});
     
     this._upClient = new UPowerGlib.Client();
     this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
@@ -298,6 +302,11 @@ CobiAnalogClock.prototype = {
   
   _onShowSecondsChanged: function() {
     this._updateClock();
+  },
+  
+  _onHideDecorationsChanged: function() {
+    this.metadata["prevent-decorations"] = this._settings.values["hide-decorations"];
+    this._updateDecoration();
   },
   
   _updateClock: function() {

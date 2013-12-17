@@ -92,7 +92,7 @@
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel" id="label1">
+                  <object class="GtkLabel" id="lblTheme">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0</property>
@@ -131,7 +131,7 @@
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel" id="label3">
+                  <object class="GtkLabel" id="lblSize">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0</property>
@@ -175,7 +175,7 @@
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel" id="label2">
+                  <object class="GtkLabel" id="lblShowSeconds">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0</property>
@@ -209,6 +209,44 @@
                 <property name="position">2</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkBox" id="box8">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="lblHideDecorations">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Hide decorations</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="cbHideDecorations">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -232,9 +270,9 @@
   </object>
   <object class="GtkSizeGroup" id="sizegroupLabels">
     <widgets>
-      <widget name="label1"/>
-      <widget name="label2"/>
-      <widget name="label3"/>
+      <widget name="lblTheme"/>
+      <widget name="lblSize"/>
+      <widget name="lblShowSeconds"/>
     </widgets>
   </object>
   <object class="GtkSizeGroup" id="sizegroupRows">

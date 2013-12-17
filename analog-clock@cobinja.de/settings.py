@@ -124,6 +124,10 @@ class CobiAnalogClockSettings:
     cbShowSeconds.set_active(self.__settings.values["show-seconds"])
     cbShowSeconds.connect("toggled", self.onShowSecondsChanged)
     
+    cbHideDecorations = self.builder.get_object("cbHideDecorations")
+    cbHideDecorations.set_active(self.__settings.values["hide-decorations"])
+    cbHideDecorations.connect("toggled", self.onHideDecorationsChanged)
+    
     sbSize = self.builder.get_object("sbSize")
     sbSize.set_range(20, 1000)
     sbSize.set_increments(1, 1)
@@ -163,6 +167,10 @@ class CobiAnalogClockSettings:
   
   def onShowSecondsChanged(self, button):
     self.__settings.setEntry("show-seconds", button.get_active(), False)
+    self.updateApplyButtonSensitivity()
+  
+  def onHideDecorationsChanged(self, button):
+    self.__settings.setEntry("hide-decorations", button.get_active(), False)
     self.updateApplyButtonSensitivity()
   
   def updateApplyButtonSensitivity(self):
