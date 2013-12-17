@@ -82,21 +82,11 @@ CobiSignalTracker.prototype = {
   }
 }
 
-function CobiSettings(instanceId) {
-  let __instance;
-  CobiSettings = function CobiSettings(instanceId) {
-    if (!__instance) {
-      this._init(instanceId);
-    }
-    return __instance;
-  }
-  CobiSettings.prototype = this;
-  __instance = new CobiSettings(instanceId);
-  __instance.constructor = CobiSettings;
-  return __instance;
+function CobiAnalogClockSettings(instanceId) {
+  this._init(instanceId);
 }
 
-CobiSettings.prototype = {
+CobiAnalogClockSettings.prototype = {
   _init: function(instanceId) {
     this._instanceId = instanceId;
     this._signalTracker = new CobiSignalTracker();
@@ -118,6 +108,8 @@ CobiSettings.prototype = {
     }
     
     this._onSettingsChanged();
+    
+    this._upgradeSettings();
     
     this._monitor = this._settingsFile.monitor(Gio.FileMonitorFlags.NONE, null);
     this._signalTracker.connect({signalName: "changed", callback: Lang.bind(this, this._onSettingsChanged), bind: this, target: this._monitor});
@@ -154,6 +146,28 @@ CobiSettings.prototype = {
     }
     return true;
   },
+  
+  _upgradeSettings: function() {
+    let defaultSettings;
+    try {
+      defaultSettings = JSON.parse(Cinnamon.get_file_contents_utf8_sync(this._getDefaultSettingsFile().get_path()));
+    }
+    catch (e) {
+      global.logError("Could not parse CobiAnalogClock's default_settings.json", e);
+      return true;
+    }
+    for (key in defaultSettings) {
+      if (defaultSettings.hasOwnProperty(key) && !(key in this.values)) {
+        this.values[key] = defaultSettings[key];
+      }
+    }
+    for (key in this.values) {
+      if (this.values.hasOwnProperty(key) && !(key in defaultSettings)) {
+        delete this.values[key];
+      }
+    }
+    this._writeSettings();
+  },
     
   setValue: function(key, value) {
     if (!compareArray(value, this.values[key])) {
@@ -176,7 +190,7 @@ CobiSettings.prototype = {
   }
 }
 
-Signals.addSignalMethods(CobiSettings.prototype);
+Signals.addSignalMethods(CobiAnalogClockSettings.prototype);
 
 function CobiAnalogClock(metadata, instanceId){
     this._init(metadata, instanceId);
@@ -188,7 +202,7 @@ CobiAnalogClock.prototype = {
   _init: function(metadata, instanceId){
     Desklet.Desklet.prototype._init.call(this, metadata, instanceId);
     this._signalTracker = new CobiSignalTracker();
-    this._settings = new CobiSettings(instanceId);
+    this._settings = new CobiAnalogClockSettings(instanceId);
     
     this._menu.addAction(_("Settings"), Lang.bind(this, function() {Util.spawnCommandLine(DESKLET_DIR + "/settings.py " + instanceId);}));
     
