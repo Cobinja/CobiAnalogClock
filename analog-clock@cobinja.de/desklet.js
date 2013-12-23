@@ -227,6 +227,7 @@ CobiAnalogClock.prototype = {
     this._signalTracker.connect({signalName: "size-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onSizeChanged)});
     this._signalTracker.connect({signalName: "theme-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onThemeChanged)});
     this._signalTracker.connect({signalName: "hide-decorations-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onHideDecorationsChanged)});
+    this._signalTracker.connect({signalName: "show-seconds-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onShowSecondsChanged)});
     
     this._upClient = new UPowerGlib.Client();
     this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
