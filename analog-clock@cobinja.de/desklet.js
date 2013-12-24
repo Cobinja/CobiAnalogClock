@@ -311,11 +311,12 @@ CobiAnalogClock.prototype = {
   },
   
   _updateClock: function() {
-    this._displayTime = new Date();
+    this._displayTime = new GLib.DateTime();
+    
     this._clockActor.queue_repaint();
     let newTimeoutSeconds = 1;
     if (!this._settings.values["show-seconds"]) {
-      let seconds = this._displayTime.getSeconds();
+      let seconds = this._displayTime.get_second();
       newTimeoutSeconds = 60 - seconds;
     }
     this._timeoutId = Mainloop.timeout_add_seconds(newTimeoutSeconds, Lang.bind(this, this._updateClock));
@@ -327,9 +328,9 @@ CobiAnalogClock.prototype = {
     let cr = this._clockActor.get_context();
     cr.translate(MARGIN, MARGIN);
     
-    let hours = this._displayTime.getHours();
-    let minutes = this._displayTime.getMinutes();
-    let seconds = this._displayTime.getSeconds();
+    let hours = this._displayTime.get_hour();
+    let minutes = this._displayTime.get_minute();
+    let seconds = this._displayTime.get_second();
     hours = (hours + (minutes / 60.0)) % 12;
     
     // body
