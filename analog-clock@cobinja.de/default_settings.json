@@ -2,5 +2,11 @@
   "theme": "Default",
   "size": 150,
   "show-seconds": true,
-  "hide-decorations": false
+  "hide-decorations": false,
+  "timezone-use": false,
+  "timezone": {
+    "city": "Europe",
+    "region": "Berlin"
+  }, 
+  "timezone-display": true
 }

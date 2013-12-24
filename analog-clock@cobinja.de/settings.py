@@ -34,6 +34,52 @@ def getThemeNames(path):
   themeNames.sort()
   return themeNames
 
+def getTimezones():
+  lsZones = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_STRING)
+  regionNames = [];
+  lsCities = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_STRING, GObject.TYPE_STRING)
+  
+  _tzinfo_dir = os.getenv("TZDIR") or "/usr/share/zoneinfo"
+  if _tzinfo_dir.endswith(os.sep):
+    _tzinfo_dir = _tzinfo_dir[:-1]
+
+  timeZones = [l.split()[2]
+                      for l in open(os.path.join(_tzinfo_dir, "zone.tab"))
+                      if l != "" and l[0] != "#"]\
+    + ['GMT',
+       'US/Alaska',
+       'US/Arizona',
+       'US/Central',
+       'US/Eastern',
+       'US/Hawaii',
+       'US/Mountain',
+       'US/Pacific',
+       'UTC']
+  timeZones.sort()
+  
+  i = 0
+  for tz in timeZones:
+    i += 1
+    (region, sep, city) = tz.partition("/")
+    if not region in regionNames:
+      region = region.replace('_', ' ')
+      regionNames.append(region)
+      lsZones.append([len(regionNames), region])
+    if city:
+      city = city.replace ('_', ' ')
+      lsCities.append([i, city, region])
+  return (lsZones, lsCities)
+
+def filterDetailFunc(model, iterator, regionCombo):
+  rcIter = regionCombo.get_active_iter()
+  if rcIter == None: return False
+  
+  rcModel = regionCombo.get_model()
+  activeRegion = rcModel[rcIter][1]
+  
+  cityRegion = model[iterator][2]
+  return activeRegion == cityRegion
+
 class CobiSettings:
   def __init__(self, instanceId):
     self.instanceId = instanceId
@@ -114,9 +160,9 @@ class CobiAnalogClockSettings:
       if themeName == self.__settings.values["theme"]:
         activeIndex = i
     cbTheme.set_model(self.lsTheme)
-    cell = Gtk.CellRendererText()
-    cbTheme.pack_start(cell, True)
-    cbTheme.add_attribute(cell, "text", 1)
+    crRegions = Gtk.CellRendererText()
+    cbTheme.pack_start(crRegions, True)
+    cbTheme.add_attribute(crRegions, "text", 1)
     cbTheme.set_active(activeIndex)
     cbTheme.connect("changed", self.onThemeChanged)
     
@@ -133,6 +179,56 @@ class CobiAnalogClockSettings:
     sbSize.set_increments(1, 1)
     sbSize.set_value(self.__settings.values["size"])
     sbSize.connect("value-changed", self.onSizeChanged)
+    
+    useTimezones = self.__settings.values["timezone-use"]
+    
+    cbUseTimezone = self.builder.get_object("cbUseTimezone")
+    cbUseTimezone.set_active(useTimezones)
+    cbUseTimezone.connect("toggled", self.onUseTimezoneChanged)
+    
+    self.cbTzRegion = self.builder.get_object("cbTzRegion")
+    self.cbTzCity = self.builder.get_object("cbTzCity")
+    
+    (self.lsTimezoneRegions, self.lsTimezoneCities) = getTimezones()
+    self.lsfCities = self.lsTimezoneCities.filter_new()
+    self.lsfCities.set_visible_func(filterDetailFunc, self.cbTzRegion)
+    self.cbTzCity.set_model(self.lsfCities)
+    self.cbTzRegion.set_model(self.lsTimezoneRegions)
+    
+    crRegions = Gtk.CellRendererText()
+    self.cbTzRegion.pack_start(crRegions, True)
+    self.cbTzRegion.add_attribute(crRegions, "text", 1)
+    crCity = Gtk.CellRendererText()
+    self.cbTzCity.pack_start(crCity, True)
+    self.cbTzCity.add_attribute(crCity, "text", 1)
+    
+    self.cbTzRegion.connect("changed", self.onTzRegionChanged)
+    self.cbTzCity.connect("changed", self.onTzCityChanged)
+    
+    activeTimezone = self.__settings.values["timezone"]
+    
+    iterator = self.lsTimezoneRegions.get_iter_first()
+    while iterator:
+      if self.lsTimezoneRegions[iterator][1] == activeTimezone["region"]:
+        self.cbTzRegion.set_active_iter(iterator)
+        break
+      iterator = self.lsTimezoneRegions.iter_next(iterator)
+    
+    iterator = self.lsfCities.get_iter_first()
+    while iterator:
+      if self.lsfCities[iterator][1] == activeTimezone["city"]:
+        self.cbTzCity.set_active_iter(iterator)
+        break
+      iterator = self.lsfCities.iter_next(iterator)
+    
+    self.cbTzDisplayLabel = self.builder.get_object("cbTzDisplayLabel")
+    self.cbTzDisplayLabel.set_active(self.__settings.values["timezone-display"])
+    self.cbTzDisplayLabel.connect("toggled", self.onTzDisplayLabelChanged)
+    
+    self.cbTzRegion.set_sensitive(useTimezones)
+    self.cbTzCity.set_sensitive(useTimezones)
+    self.cbTzDisplayLabel.set_sensitive(useTimezones)
+    self.builder.get_object("lblTzDisplayLabel").set_sensitive(useTimezones)
     
     self.updateApplyButtonSensitivity()
 
@@ -173,13 +269,55 @@ class CobiAnalogClockSettings:
     self.__settings.setEntry("hide-decorations", button.get_active(), False)
     self.updateApplyButtonSensitivity()
   
+  def onUseTimezoneChanged(self, button):
+    active = button.get_active()
+    self.__settings.setEntry("timezone-use", active, False)
+    self.cbTzRegion.set_sensitive(active)
+    self.cbTzCity.set_sensitive(active)
+    self.cbTzDisplayLabel.set_sensitive(active)
+    self.builder.get_object("lblTzDisplayLabel").set_sensitive(active)
+    self.updateApplyButtonSensitivity()
+  
+  def onTzRegionChanged(self, button):
+    tree_iter = button.get_active_iter()
+    if tree_iter != None:
+      region = self.lsTimezoneRegions[tree_iter][1]
+    if region:
+      self.lsfCities.refilter()
+      self.cbTzCity.set_active_iter(self.lsfCities.get_iter_first())
+      self.cbTzCity.set_sensitive(len(self.lsfCities) > 0)
+    self.updateTzSetting()
+    self.updateApplyButtonSensitivity()
+  
+  def onTzCityChanged(self, button):
+    self.updateTzSetting()
+    self.updateApplyButtonSensitivity()
+  
+  def onTzDisplayLabelChanged(self, button):
+    active = button.get_active()
+    self.__settings.setEntry("timezone-display", active, False)
+    self.updateApplyButtonSensitivity()
+  
+  def updateTzSetting(self):
+    newTz = {}
+    regionIter = self.cbTzRegion.get_active_iter()
+    if regionIter != None:
+      region = self.lsTimezoneRegions[regionIter][1]
+    if region:
+      newTz["region"] = region
+      newTz["city"] = ""
+      cityIter = self.cbTzCity.get_active_iter()
+      if cityIter:
+        newTz["city"] = self.lsfCities[cityIter][1]
+    self.__settings.setEntry("timezone", newTz, False)
+  
   def updateApplyButtonSensitivity(self):
     btn = self.builder.get_object("buttonApply")
     changed = self.__settings.changed()
     btn.set_sensitive(changed)
 
 def main():
-  app = CobiAnalogClockSettings()
+  CobiAnalogClockSettings()
   Gtk.main()
     
 if __name__ == "__main__":

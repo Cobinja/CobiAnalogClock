@@ -229,6 +229,9 @@ CobiAnalogClock.prototype = {
     this._signalTracker.connect({signalName: "hide-decorations-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onHideDecorationsChanged)});
     this._signalTracker.connect({signalName: "show-seconds-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onShowSecondsChanged)});
     
+    this._signalTracker.connect({signalName: "timezone-use-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneChanged)});
+    this._signalTracker.connect({signalName: "timezone-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneChanged)});
+    
     this._upClient = new UPowerGlib.Client();
     this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
   },
@@ -310,9 +313,46 @@ CobiAnalogClock.prototype = {
     this._updateDecoration();
   },
   
+  _onTimezoneChanged: function() {
+    let tz = this._settings.values["timezone"];
+    let zoneName = tz["region"];
+    if (tz["city"] != "") {
+      zoneName += "/" + tz["city"];
+    }
+    let zoneDirName = "/usr/share/zoneinfo/";
+    let zoneDir = Gio.file_new_for_path(zoneDirName);
+    let tzId = zoneDirName + tz["region"];
+    if (tz["city"]) {
+      tzId += "/" + tz["city"];
+    }
+    tzId = tzId.replace(" ", "_");
+    let tzFile = Gio.file_new_for_path(tzId);
+    this._tzId = tzFile.query_exists(null) ? ":" + tzId : null;
+    this._updateHeader();
+    this._updateClock();
+  },
+  
+  _updateHeader: function() {
+    if (this._settings.values["timezone-use"] && this._settings.values["timezone-display"]) {
+      let tz = this._settings.values["timezone"];
+      if (tz.city != null) {
+        this.setHeader(tz.city);
+      }
+      else {
+        this.setHeader(tz.region);
+      }
+    }
+    else {
+      this.setHeader(_("Clock"));
+    }
+  },
+  
   _updateClock: function() {
     this._displayTime = new GLib.DateTime();
-    
+    if (this._settings.values["timezone-use"] && this._tzId != null) {
+      let tz = GLib.TimeZone.new(this._tzId);
+      this._displayTime = this._displayTime.to_timezone(tz);
+    }
     this._clockActor.queue_repaint();
     let newTimeoutSeconds = 1;
     if (!this._settings.values["show-seconds"]) {
@@ -414,6 +454,6 @@ CobiAnalogClock.prototype = {
 }
 
 function main(metadata, instanceId){
-    let desklet = new CobiAnalogClock(metadata, instanceId);
-    return desklet;
+  let desklet = new CobiAnalogClock(metadata, instanceId);
+  return desklet;
 }
