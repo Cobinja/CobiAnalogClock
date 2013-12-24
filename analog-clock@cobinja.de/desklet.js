@@ -231,6 +231,7 @@ CobiAnalogClock.prototype = {
     
     this._signalTracker.connect({signalName: "timezone-use-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneChanged)});
     this._signalTracker.connect({signalName: "timezone-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneChanged)});
+    this._signalTracker.connect({signalName: "timezone-display-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneDisplayChanged)});
     
     this._upClient = new UPowerGlib.Client();
     this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
@@ -332,14 +333,20 @@ CobiAnalogClock.prototype = {
     this._updateClock();
   },
   
+  _onTimezoneDisplayChanged: function() {
+    if (this._tzId != null) {
+      this._updateHeader();
+    }
+  },
+  
   _updateHeader: function() {
     if (this._settings.values["timezone-use"] && this._settings.values["timezone-display"]) {
       let tz = this._settings.values["timezone"];
-      if (tz.city != null) {
-        this.setHeader(tz.city);
+      if (tz["city"] && tz["city"] != "") {
+        this.setHeader(tz["city"]);
       }
       else {
-        this.setHeader(tz.region);
+        this.setHeader(tz["region"]);
       }
     }
     else {
