@@ -5,8 +5,8 @@
   "hide-decorations": false,
   "timezone-use": false,
   "timezone": {
-    "city": "Europe",
-    "region": "Berlin"
+    "city": "Berlin",
+    "region": "Europe"
   }, 
   "timezone-display": true
 }
