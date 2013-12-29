@@ -4,7 +4,7 @@
   <object class="GtkDialog" id="SettingsWindow">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">CobiWindowList</property>
+    <property name="title" translatable="yes">Analog Clock Settings</property>
     <property name="resizable">False</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
