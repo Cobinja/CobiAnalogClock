@@ -167,6 +167,7 @@ CobiAnalogClockSettings.prototype = {
       }
     }
     this._writeSettings();
+    return false;
   },
     
   setValue: function(key, value) {
@@ -202,7 +203,14 @@ CobiAnalogClock.prototype = {
   _init: function(metadata, instanceId){
     Desklet.Desklet.prototype._init.call(this, metadata, instanceId);
     this._signalTracker = new CobiSignalTracker();
+    this._paintSignals = new CobiSignalTracker();
     this._settings = new CobiAnalogClockSettings(instanceId);
+    
+    this._displayTime = new GLib.DateTime();
+    if (this._settings.values["timezone-use"] && this._tzId != null) {
+      let tz = GLib.TimeZone.new(this._tzId);
+      this._displayTime = this._displayTime.to_timezone(tz);
+    }
     
     this._menu.addAction(_("Settings"), Lang.bind(this, function() {Util.spawnCommandLine(DESKLET_DIR + "/settings.py " + instanceId);}));
     
@@ -211,14 +219,15 @@ CobiAnalogClock.prototype = {
     
     this._clockSize = this._settings.values["size"];
     
-    this._clockActor = new St.DrawingArea({width: this._clockSize + 2*MARGIN, height: this._clockSize + 2*MARGIN});
+    this._clockActor = new St.Group();
+    
+    this._tzLabel = new St.Label();
     
     this.setHeader(_("Clock"));
     this.setContent(this._clockActor);
     
-    this._clock = this._loadTheme();
-    
-    this._signalTracker.connect({signalName: "repaint", target: this._clockActor, bind: this, callback: Lang.bind(this, this._paintClock)});
+    //this._clock = this._loadTheme();
+    this._loadClock();
     
     let currentMillis = new Date().getMilliseconds();
     let timeoutMillis = (1000 - currentMillis) % 1000;
@@ -244,7 +253,9 @@ CobiAnalogClock.prototype = {
     let metaDataFile = themeDir.get_child("metadata.json");
     let metaData = JSON.parse(Cinnamon.get_file_contents_utf8_sync(metaDataFile.get_path()));
     
-    let clock = {"size": metaData["size"]};
+    let clock = {"size": metaData["size"], "tz-label": metaData["tz-label"]};
+    clock.bottomActor = new St.DrawingArea({width: this._clockSize + 2*MARGIN, height: this._clockSize + 2*MARGIN});
+    clock.topActor = new St.DrawingArea({width: this._clockSize + 2*MARGIN, height: this._clockSize + 2*MARGIN});
     
     let bodyFileName = metaData["body"];
     let body = {};
@@ -285,11 +296,25 @@ CobiAnalogClock.prototype = {
     return clock;
   },
   
+  _loadClock: function() {
+    let newClock = this._loadTheme();
+    this._paintSignals.disconnectAll();
+    this._clock = newClock;
+    this._clockActor.remove_all_children();
+    this._clockActor.add_actor(this._clock.bottomActor);
+    // add timezone label
+    this._tzLabel.set_style(this._clock["tz-label"]);
+    this._updateTzLabel();
+    this._clockActor.add_actor(this._tzLabel);
+    this._clockActor.add_actor(this._clock.topActor);
+    this._paintSignals.connect({signalName: "repaint", target: this._clock.bottomActor, bind: this, callback: Lang.bind(this, this._onPaintBottomActor)});
+    this._paintSignals.connect({signalName: "repaint", target: this._clock.topActor, bind: this, callback: Lang.bind(this, this._onPaintTopActor)});
+  },
+  
   _onThemeChanged: function() {
     Mainloop.source_remove(this._timeoutId);
     try {
-      let newClock = this._loadTheme();
-      this._clock = newClock;
+      this._loadClock();
     }
     catch (e) {
       global.logError("Could not load analog clock theme", e);
@@ -301,6 +326,11 @@ CobiAnalogClock.prototype = {
     let size = this._settings.values["size"];
     this._clockActor.set_width(size + 2 * MARGIN);
     this._clockActor.set_height(size + 2 * MARGIN);
+    this._clock.bottomActor.set_width(size + 2 * MARGIN);
+    this._clock.bottomActor.set_height(size + 2 * MARGIN);
+    this._clock.topActor.set_width(size + 2 * MARGIN);
+    this._clock.topActor.set_height(size + 2 * MARGIN);
+    
     this._clockSize = size;
     this._updateClock();
   },
@@ -312,6 +342,7 @@ CobiAnalogClock.prototype = {
   _onHideDecorationsChanged: function() {
     this.metadata["prevent-decorations"] = this._settings.values["hide-decorations"];
     this._updateDecoration();
+    this._updateTzLabel();
   },
   
   _onTimezoneChanged: function() {
@@ -330,28 +361,41 @@ CobiAnalogClock.prototype = {
     let tzFile = Gio.file_new_for_path(tzId);
     this._tzId = tzFile.query_exists(null) ? ":" + tzId : null;
     this._updateHeader();
+    this._updateTzLabel();
     this._updateClock();
   },
   
   _onTimezoneDisplayChanged: function() {
-    if (this._tzId != null) {
-      this._updateHeader();
-    }
+    this._updateHeader();
+    this._updateTzLabel();
   },
   
-  _updateHeader: function() {
+  _getTzLabelText: function() {
+    let result = _("Clock");
     if (this._settings.values["timezone-use"] && this._settings.values["timezone-display"]) {
       let tz = this._settings.values["timezone"];
       if (tz["city"] && tz["city"] != "") {
-        this.setHeader(tz["city"]);
+        result = tz["city"];
       }
       else {
-        this.setHeader(tz["region"]);
+        result = tz["region"];
       }
     }
-    else {
-      this.setHeader(_("Clock"));
-    }
+    return result;
+  },
+  
+  _updateTzLabel: function() {
+    this._tzLabel.set_text(this._getTzLabelText());
+    let lSize = this._tzLabel.size;
+    let aSize = this._clockActor.size;
+    let x = Math.round((aSize.width - lSize.width) / 2.0);
+    let y = Math.round((aSize.height - lSize.height) * 2 / 3.0);
+    this._tzLabel.set_position(x, y);
+    this._tzLabel.visible = this._settings.values["hide-decorations"] && this._settings.values["timezone-use"] && this._settings.values["timezone-display"];
+  },
+  
+  _updateHeader: function() {
+    this.setHeader(this._getTzLabelText());
   },
   
   _updateClock: function() {
@@ -360,7 +404,10 @@ CobiAnalogClock.prototype = {
       let tz = GLib.TimeZone.new(this._tzId);
       this._displayTime = this._displayTime.to_timezone(tz);
     }
-    this._clockActor.queue_repaint();
+    
+    this._clock.bottomActor.queue_repaint();
+    this._clock.topActor.queue_repaint();
+    
     let newTimeoutSeconds = 1;
     if (!this._settings.values["show-seconds"]) {
       let seconds = this._displayTime.get_second();
@@ -370,56 +417,60 @@ CobiAnalogClock.prototype = {
     return false;
   },
   
-  _paintClock: function() {
+  _onPaintBottomActor: function() {
     let scale = this._clockSize / this._clock["size"];
-    let cr = this._clockActor.get_context();
+    let cr = this._clock.bottomActor.get_context();
+    
+    cr.save();
     cr.translate(MARGIN, MARGIN);
+    if (scale != 1) {
+      cr.scale(scale, scale);
+    }
+    
+    this._clock.body.rsvgHandle.render_cairo(cr);
+    this._clock.clockface.rsvgHandle.render_cairo(cr);
+    
+    cr.restore();
+    cr.fill();
+    delete cr;
+    global.gc();
+  },
+  
+  _onPaintTopActor: function() {
+    let scale = this._clockSize / this._clock["size"];
+    let cr = this._clock.topActor.get_context();
     
     let hours = this._displayTime.get_hour();
     let minutes = this._displayTime.get_minute();
     let seconds = this._displayTime.get_second();
     hours = (hours + (minutes / 60.0)) % 12;
     
-    // body
+    let rsvgDim;
+    let angle;
+    
     cr.save();
-    cr.scale(scale, scale);
-    this._clock.body.rsvgHandle.render_cairo(cr);
-    cr.restore();
-    
-    // clockface
-    cr.save();
-    cr.scale(scale, scale);
-    this._clock.clockface.rsvgHandle.render_cairo(cr);
-    cr.restore();
-    
-    // hour hand
-    cr.save();
-    let rsvgDim = this._clock.hour.rsvgHandle.get_dimensions();
-    let angle = RAD_PER_DEGREE * 30 * hours;
-    
-    cr.translate(this._clockSize / 2, this._clockSize / 2);
-    cr.rotate(angle);
-    cr.translate(-(this._clock.hour.pivotX * scale), -(this._clock.hour.pivotY * scale));
-    
+    cr.translate(MARGIN, MARGIN);
     if (scale != 1) {
       cr.scale(scale, scale);
     }
+    
+    // hour
+    cr.save()
+    rsvgDim = this._clock.hour.rsvgHandle.get_dimensions();
+    angle = RAD_PER_DEGREE * 30 * hours;
+    cr.translate(this._clock["size"] / 2, this._clock["size"] / 2);
+    cr.rotate(angle);
+    cr.translate(-(this._clock.hour.pivotX), -(this._clock.hour.pivotY));
     this._clock.hour.rsvgHandle.render_cairo(cr);
     cr.restore();
     
     // minute
     cr.save();
     rsvgDim = this._clock.minute.rsvgHandle.get_dimensions();
-    
     angle = RAD_PER_DEGREE * 6 * minutes;
-    
-    cr.translate(this._clockSize / 2, this._clockSize / 2);
+    cr.translate(this._clock["size"] / 2, this._clock["size"] / 2);
     cr.rotate(angle);
-    cr.translate(-(this._clock.minute.pivotX * scale), -(this._clock.minute.pivotY * scale));
-    
-    if (scale != 1) {
-      cr.scale(scale, scale);
-    }
+    cr.translate(-(this._clock.minute.pivotX), -(this._clock.minute.pivotY));
     this._clock.minute.rsvgHandle.render_cairo(cr);
     cr.restore();
     
@@ -427,36 +478,32 @@ CobiAnalogClock.prototype = {
     if (this._settings.values["show-seconds"]) {
       cr.save();
       rsvgDim = this._clock.second.rsvgHandle.get_dimensions();
-      
       angle = RAD_PER_DEGREE * 6 * seconds;
-      
-      cr.translate(this._clockSize / 2, this._clockSize / 2);
+      cr.translate(this._clock["size"] / 2, this._clock["size"] / 2);
       cr.rotate(angle);
-      cr.translate(-(this._clock.second.pivotX * scale), -(this._clock.second.pivotY * scale));
-      
-      if (scale != 1) {
-        cr.scale(scale, scale);
-      }
+      cr.translate(-(this._clock.second.pivotX), -(this._clock.second.pivotY));
       this._clock.second.rsvgHandle.render_cairo(cr);
       cr.restore();
     }
     
-    // frame
     cr.save();
-    cr.scale(scale, scale);
     this._clock.frame.rsvgHandle.render_cairo(cr);
     cr.restore();
     
+    cr.restore();
     cr.fill();
+    delete cr;
+    global.gc();
   },
   
   on_desklet_removed: function() {
+    this._paintSignals.destroy();
     if (this._timeoutId != undefined) {
       Mainloop.source_remove(this._timeoutId);
     }
     this._signalTracker.destroy();
     this._settings.destroy();
-    
+    global.gc();
   }
 }
 
