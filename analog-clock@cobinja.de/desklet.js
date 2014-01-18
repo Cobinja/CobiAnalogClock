@@ -391,7 +391,10 @@ CobiAnalogClock.prototype = {
     let x = Math.round((aSize.width - lSize.width) / 2.0);
     let y = Math.round((aSize.height - lSize.height) * 2 / 3.0);
     this._tzLabel.set_position(x, y);
-    this._tzLabel.visible = this._settings.values["hide-decorations"] && this._settings.values["timezone-use"] && this._settings.values["timezone-display"];
+    let showLabel = (this._settings.values["hide-decorations"] || global.settings.get_int("desklet-decorations") <= 1) &&
+                     this._settings.values["timezone-use"] &&
+                     this._settings.values["timezone-display"];
+    showLabel ? this._tzLabel.show() : this._tzLabel.hide();
   },
   
   _updateHeader: function() {
