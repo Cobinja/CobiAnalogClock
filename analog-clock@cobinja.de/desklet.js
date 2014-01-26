@@ -386,8 +386,8 @@ CobiAnalogClock.prototype = {
   
   _updateTzLabel: function() {
     this._tzLabel.set_text(this._getTzLabelText());
-    let lSize = this._tzLabel.size;
-    let aSize = this._clockActor.size;
+    let lSize = this._tzLabel.get_size();
+    let aSize = this._clockActor.get_size();
     let x = Math.round((aSize.width - lSize.width) / 2.0);
     let y = Math.round((aSize.height - lSize.height) * 2 / 3.0);
     this._tzLabel.set_position(x, y);
