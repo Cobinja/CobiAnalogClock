@@ -228,7 +228,6 @@ CobiAnalogClock.prototype = {
     this.setHeader(_("Clock"));
     this.setContent(this._clockActor);
     
-    //this._clock = this._loadTheme();
     this._loadClock();
     
     let currentMillis = new Date().getMilliseconds();
@@ -438,7 +437,6 @@ CobiAnalogClock.prototype = {
     cr.restore();
     cr.fill();
     cr = null;
-    //global.gc();
   },
   
   _onPaintTopActor: function() {
@@ -498,7 +496,6 @@ CobiAnalogClock.prototype = {
     cr.restore();
     cr.fill();
     cr = null;
-    //global.gc();
   },
   
   on_desklet_removed: function() {
@@ -509,7 +506,6 @@ CobiAnalogClock.prototype = {
     }
     this._signalTracker.destroy();
     this._settings.destroy();
-    //global.gc();
   }
 }
 
