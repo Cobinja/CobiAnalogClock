@@ -129,7 +129,7 @@ CobiAnalogClockSettings.prototype = {
       return true;
     }
     
-    for (key in settings) {
+    for (let key in settings) {
       if (settings.hasOwnProperty(key)) {
         let comparison;
         if (settings[key] instanceof Array) {
@@ -156,12 +156,12 @@ CobiAnalogClockSettings.prototype = {
       global.logError("Could not parse CobiAnalogClock's default_settings.json", e);
       return true;
     }
-    for (key in defaultSettings) {
+    for (let key in defaultSettings) {
       if (defaultSettings.hasOwnProperty(key) && !(key in this.values)) {
         this.values[key] = defaultSettings[key];
       }
     }
-    for (key in this.values) {
+    for (let key in this.values) {
       if (this.values.hasOwnProperty(key) && !(key in defaultSettings)) {
         delete this.values[key];
       }
@@ -213,7 +213,9 @@ CobiAnalogClock.prototype = {
     }
     
     this._menu.addAction(_("Settings"), Lang.bind(this, function() {Util.spawnCommandLine(DESKLET_DIR + "/settings.py " + instanceId);}));
-    
+  },
+  
+  on_desklet_added_to_desktop: function(userEnabled) {
     this.metadata["prevent-decorations"] = this._settings.values["hide-decorations"];
     this._updateDecoration();
     
@@ -303,9 +305,9 @@ CobiAnalogClock.prototype = {
     this._clockActor.remove_all_children();
     this._clockActor.add_actor(this._clock.bottomActor);
     // add timezone label
+    this._clockActor.add_actor(this._tzLabel);
     this._tzLabel.set_style(this._clock["tz-label"]);
     this._updateTzLabel();
-    this._clockActor.add_actor(this._tzLabel);
     this._clockActor.add_actor(this._clock.topActor);
     this._paintSignals.connect({signalName: "repaint", target: this._clock.bottomActor, bind: this, callback: Lang.bind(this, this._onPaintBottomActor)});
     this._paintSignals.connect({signalName: "repaint", target: this._clock.topActor, bind: this, callback: Lang.bind(this, this._onPaintTopActor)});
@@ -386,8 +388,8 @@ CobiAnalogClock.prototype = {
   
   _updateTzLabel: function() {
     this._tzLabel.set_text(this._getTzLabelText());
-    let lSize = this._tzLabel.get_size();
-    let aSize = this._clockActor.get_size();
+    let lSize = this._tzLabel.size;
+    let aSize = this._clockActor.size;
     let x = Math.round((aSize.width - lSize.width) / 2.0);
     let y = Math.round((aSize.height - lSize.height) * 2 / 3.0);
     this._tzLabel.set_position(x, y);
@@ -435,8 +437,8 @@ CobiAnalogClock.prototype = {
     
     cr.restore();
     cr.fill();
-    delete cr;
-    global.gc();
+    cr = null;
+    //global.gc();
   },
   
   _onPaintTopActor: function() {
@@ -495,18 +497,19 @@ CobiAnalogClock.prototype = {
     
     cr.restore();
     cr.fill();
-    delete cr;
-    global.gc();
+    cr = null;
+    //global.gc();
   },
   
   on_desklet_removed: function() {
+    this._paintSignals.disconnectAll();
     this._paintSignals.destroy();
     if (this._timeoutId != undefined) {
       Mainloop.source_remove(this._timeoutId);
     }
     this._signalTracker.destroy();
     this._settings.destroy();
-    global.gc();
+    //global.gc();
   }
 }
 
