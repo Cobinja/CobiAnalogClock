@@ -244,7 +244,12 @@ CobiAnalogClock.prototype = {
     this._signalTracker.connect({signalName: "timezone-display-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneDisplayChanged)});
     
     this._upClient = new UPowerGlib.Client();
-    this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
+    try {
+      this._upClient.connect('notify-resume', Lang.bind(this, this._updateClock));
+    }
+    catch (e) {
+      this._upClient.connect('notify::resume', Lang.bind(this, this._updateClock));
+    }
   },
   
   _loadTheme: function() {
