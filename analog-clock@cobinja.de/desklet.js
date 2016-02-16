@@ -207,11 +207,7 @@ CobiAnalogClock.prototype = {
     this._settings = new CobiAnalogClockSettings(instanceId);
     
     this._displayTime = new GLib.DateTime();
-    if (this._settings.values["timezone-use"] && this._tzId != null) {
-      let tz = GLib.TimeZone.new(this._tzId);
-      this._displayTime = this._displayTime.to_timezone(tz);
-    }
-    
+
     this._menu.addAction(_("Settings"), Lang.bind(this, function() {Util.spawnCommandLine(DESKLET_DIR + "/settings.py " + instanceId);}));
   },
   
@@ -250,6 +246,7 @@ CobiAnalogClock.prototype = {
     catch (e) {
       this._upClient.connect('notify::resume', Lang.bind(this, this._updateClock));
     }
+    this._onTimezoneChanged();
   },
   
   _loadTheme: function() {
