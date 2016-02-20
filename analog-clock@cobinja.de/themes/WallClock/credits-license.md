@@ -2,7 +2,7 @@ Wall Clock Theme for CobiAnalogClock Desklet
 ============================================
 
 License: CC-BY http://creativecommons.org/licenses/by/3.0/
-by jorgenqv, February 2015
+by jorgenqv, February 2016
 
 Based on
 3Quarks - SVG Railway Station Clock
