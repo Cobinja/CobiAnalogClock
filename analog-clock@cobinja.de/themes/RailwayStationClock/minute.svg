@@ -7,10 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="6.2800002"
-   height="53.450001"
-   id="svg2">
+   width="6"
+   height="80"
+   id="svg2"
+   inkscape:version="0.91 r"
+   sodipodi:docname="minute.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="914"
+     inkscape:window-height="902"
+     id="namedview7"
+     showgrid="false"
+     inkscape:zoom="8.25"
+     inkscape:cx="11.888328"
+     inkscape:cy="28.766307"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4" />
   <metadata
@@ -25,12 +49,20 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     transform="matrix(1.1783587,7.2912341e-4,-7.309401e-4,1.1887843,2.0728713,-1197.5486)"
-     id="layer1-6">
-    <path
-       d="m 3.0048563,1052.346 -2.94749244,-10e-5 -0.02000622,-43.6803 1.49558796,-1.2884 1.444817,1.2907 z"
-       id="path3268"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;marker:none;visibility:visible;display:inline;overflow:visible" />
-  </g>
+  <path
+     inkscape:connector-curvature="0"
+     id="minutes"
+     d="m 3.1427212,0.28940151 2.73125,2.71772039 0,76.8113561 -5.46250006,0 0,-76.8113561 2.73125006,-2.71772039 z">
+    <animateTransform
+       repeatCount="indefinite"
+       accumulate="sum"
+       keyTimes="0; 1"
+       values="0; 6"
+       calcMode="discrete"
+       dur="1min"
+       begin="wallclock(00:00)"
+       type="rotate"
+       attributeType="XML"
+       attributeName="transform" />
+  </path>
 </svg>

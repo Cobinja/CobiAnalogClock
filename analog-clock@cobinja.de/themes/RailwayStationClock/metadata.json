@@ -3,8 +3,8 @@
   "body": "body.svg",
   "clockface": "clockface.svg",
   "frame": "frame.svg",
-  "hour": {"fileName": "hour.svg", "pivot-x": 4, "pivot-y": 29.5},
-  "minute": {"fileName": "minute.svg", "pivot-x": 3.1, "pivot-y": 43.5},
-  "second": {"fileName": "second.svg", "pivot-x": 5.3, "pivot-y": 43.5},
+  "hour": {"fileName": "hour.svg", "pivot-x": 4.0, "pivot-y": 36.0},
+  "minute": {"fileName": "minute.svg", "pivot-x": 3.0, "pivot-y": 62.0},
+  "second": {"fileName": "second.svg", "pivot-x": 7.5, "pivot-y": 62.0},
   "tz-label": "color: #292927; font-weight: bold;"
 }

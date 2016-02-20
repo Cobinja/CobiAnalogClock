@@ -7,10 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="8"
-   height="40"
-   id="svg2">
+   height="54"
+   id="svg2"
+   inkscape:version="0.91 r"
+   sodipodi:docname="hour.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="826"
+     inkscape:window-height="773"
+     id="namedview7"
+     showgrid="false"
+     inkscape:zoom="14.53"
+     inkscape:cx="4"
+     inkscape:cy="39.983098"
+     inkscape:window-x="82"
+     inkscape:window-y="139"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4" />
   <metadata
@@ -25,13 +49,19 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     transform="matrix(1.2705887,-0.00257422,0.00246957,1.3389299,-1.0819309,-1369.268)"
-     id="layer1-9"
+  <path
+     inkscape:connector-curvature="0"
+     id="hours"
+     d="m 0.25307265,54.050678 7.64484695,0 0,-50.7437532 L 4.0754961,6.7472086e-4 0.25307265,3.3069248 l 0,50.7437532 z"
      style="fill:#1a1a1a">
-    <path
-       d="m -0.01771162,1052.5519 3.95923012,-0.018 0.065048,-27.9752 -1.9525352,-1.908 -2.02709846,1.9221 -0.04467831,27.9966 z"
-       id="rect3263"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;marker:none;visibility:visible;display:inline;overflow:visible" />
-  </g>
+    <animateTransform
+       repeatCount="indefinite"
+       to="360"
+       from="0"
+       dur="12h"
+       begin="wallclock(00:00)"
+       type="rotate"
+       attributeType="XML"
+       attributeName="transform" />
+  </path>
 </svg>

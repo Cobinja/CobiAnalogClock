@@ -7,10 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="150"
    height="150"
-   id="svg3908">
+   id="svg3908"
+   inkscape:version="0.91 r"
+   sodipodi:docname="body.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1157"
+     inkscape:window-height="882"
+     id="namedview62"
+     showgrid="false"
+     inkscape:zoom="3.14"
+     inkscape:cx="60.943909"
+     inkscape:cy="64.263208"
+     inkscape:window-x="100"
+     inkscape:window-y="101"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3908" />
   <defs
      id="defs3910">
     <filter
@@ -27,6 +51,38 @@
          stdDeviation="2.5940401"
          id="feGaussianBlur5428" />
     </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter4320">
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood4322" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="out"
+         result="composite1"
+         id="feComposite4324" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="3"
+         result="blur"
+         id="feGaussianBlur4326" />
+      <feOffset
+         dx="4"
+         dy="4"
+         result="offset"
+         id="feOffset4328" />
+      <feComposite
+         in="offset"
+         in2="SourceGraphic"
+         operator="atop"
+         result="composite2"
+         id="feComposite4330" />
+    </filter>
   </defs>
   <metadata
      id="metadata3913">
@@ -36,242 +92,28 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     transform="translate(0,-902.36218)"
-     id="layer1">
-    <g
-       transform="matrix(1.0162327,0,0,1.0088277,18.195369,915.07958)"
-       id="g6537-1"
-       style="fill:#333233;fill-opacity:0">
-      <g
-         transform="matrix(1.0002713,0,0,0.99905243,-10.66153,-6.916393)"
-         id="g4479-8"
-         style="fill:#333233;fill-opacity:0">
-        <g
-           transform="translate(0,86)"
-           id="layer1-6-5"
-           style="fill:#333233;fill-opacity:0;display:inline" />
-        <g
-           transform="translate(0,50)"
-           id="layer2-9-5"
-           style="fill:#333233;fill-opacity:0;display:inline" />
-        <g
-           transform="matrix(1.0550617,0,0,1.0594634,-4.0203092,-4.3441155)"
-           id="g3999-6"
-           style="fill:#333233;fill-opacity:0">
-          <g
-             transform="translate(0,86)"
-             id="layer1-7-7"
-             style="fill:#333233;fill-opacity:0;display:inline" />
-          <g
-             transform="translate(0,50)"
-             id="layer2-2-9"
-             style="fill:#333233;fill-opacity:0;display:inline" />
-          <g
-             transform="matrix(0.73693677,0,0,0.73694734,19.265963,58.207802)"
-             id="layer3-6"
-             style="fill:#333233;fill-opacity:0;display:inline">
-            <path
-               d="m 98.909092,49.727272 a 49.545456,49.545456 0 1 1 -99.09091192,0 49.545456,49.545456 0 1 1 99.09091192,0 z"
-               transform="matrix(1.3972063,0,0,1.3972063,6.7330422,-46.76799)"
-               id="path2995-0"
-               style="fill:#333233;fill-opacity:0;stroke:none;stroke-width:1.10903525;marker-start:none;marker-mid:none;marker-end:none;display:inline" />
-          </g>
-        </g>
-      </g>
-      <g
-         transform="translate(0,86)"
-         id="layer1-9-1"
-         style="fill:#333233;fill-opacity:0;display:inline" />
-      <g
-         transform="translate(0,50)"
-         id="layer2-8-1"
-         style="fill:#333233;fill-opacity:0;display:inline" />
-      <g
-         transform="matrix(0.9469009,0,0,0.94969805,4.1954625,85.392385)"
-         id="layer1-2-5"
-         style="fill:#333233;fill-opacity:0;display:inline" />
-      <g
-         transform="matrix(0.9469009,0,0,0.94969805,4.1954625,51.203255)"
-         id="layer2-6-7"
-         style="fill:#333233;fill-opacity:0;display:inline" />
-    </g>
-    <g
-       transform="matrix(0.96227166,0,0,0.9580817,20.552149,921.37313)"
-       id="g5267-6"
-       style="fill:#000000">
-      <g
-         transform="translate(0,86)"
-         id="layer1-2-8"
-         style="fill:#000000;display:inline" />
-      <g
-         transform="translate(0,50)"
-         id="layer2-6-1"
-         style="fill:#000000;display:inline" />
-      <g
-         transform="matrix(1.0563632,0,0,1.0519685,-4.4613984,-3.9006075)"
-         id="g4479-7"
-         style="fill:#000000">
-        <g
-           transform="matrix(1.0550617,0,0,1.0594634,-12.148832,-13.172922)"
-           id="g3999-4"
-           style="opacity:0.35775865;fill:#000000;filter:url(#filter5426)">
-          <g
-             transform="translate(0,86)"
-             id="layer1-7-70"
-             style="fill:#000000;display:inline" />
-          <g
-             transform="translate(0,50)"
-             id="layer2-2-6"
-             style="fill:#000000;display:inline" />
-          <g
-             transform="matrix(0.73693677,0,0,0.73694734,19.265963,58.207802)"
-             id="layer3-9"
-             style="fill:#000000;display:inline">
-            <path
-               d="m 98.909092,49.727272 a 49.545456,49.545456 0 1 1 -99.09091192,0 49.545456,49.545456 0 1 1 99.09091192,0 z"
-               transform="matrix(1.3972063,0,0,1.3972063,6.7330422,-46.76799)"
-               id="path2995-9"
-               style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.10903525;marker-start:none;marker-mid:none;marker-end:none;display:inline" />
-          </g>
-        </g>
-        <g
-           transform="translate(0,86)"
-           id="layer1-6-2"
-           style="fill:#000000;display:inline" />
-        <g
-           transform="translate(0,50)"
-           id="layer2-9-59"
-           style="fill:#000000;display:inline" />
-      </g>
-    </g>
-    <g
-       transform="matrix(1.0162327,0,0,1.0088277,-1.7463752,901.09653)"
-       id="g6537"
-       style="fill:#808080">
-      <g
-         transform="translate(0,86)"
-         id="layer1-9"
-         style="fill:#808080;display:inline" />
-      <g
-         transform="translate(0,50)"
-         id="layer2-8"
-         style="fill:#808080;display:inline" />
-      <g
-         transform="matrix(0.9469009,0,0,0.94969805,4.1954625,3.7183527)"
-         id="g5267"
-         style="fill:#808080">
-        <g
-           transform="translate(0,86)"
-           id="layer1-2"
-           style="fill:#808080;display:inline" />
-        <g
-           transform="translate(0,50)"
-           id="layer2-6"
-           style="fill:#808080;display:inline" />
-        <g
-           transform="matrix(1.0563632,0,0,1.0519685,-4.4613984,-3.9006075)"
-           id="g4479"
-           style="fill:#808080">
-          <g
-             transform="translate(0,86)"
-             id="layer1-6"
-             style="fill:#808080;display:inline" />
-          <g
-             transform="translate(0,50)"
-             id="layer2-9"
-             style="fill:#808080;display:inline" />
-          <g
-             transform="matrix(1.0550617,0,0,1.0594634,-4.0203092,-4.3441155)"
-             id="g3999"
-             style="fill:#808080">
-            <g
-               transform="translate(0,86)"
-               id="layer1-7"
-               style="fill:#808080;display:inline" />
-            <g
-               transform="translate(0,50)"
-               id="layer2-2"
-               style="fill:#808080;display:inline" />
-            <g
-               transform="matrix(0.73693677,0,0,0.73694734,19.265963,58.207802)"
-               id="layer3"
-               style="fill:#808080;display:inline">
-              <path
-                 d="m 98.909092,49.727272 a 49.545456,49.545456 0 1 1 -99.09091192,0 49.545456,49.545456 0 1 1 99.09091192,0 z"
-                 transform="matrix(1.3972063,0,0,1.3972063,6.7330422,-46.76799)"
-                 id="path2995"
-                 style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:1.10903525;marker-start:none;marker-mid:none;marker-end:none;display:inline" />
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
-    <g
-       transform="matrix(0.9856474,0,0,0.98479511,1.4230128,903.55053)"
-       id="g6537-7"
-       style="fill:#f9f9f9;filter:url(#filter5519)">
-      <g
-         transform="translate(0,86)"
-         id="layer1-9-21"
-         style="fill:#f9f9f9;display:inline" />
-      <g
-         transform="translate(0,50)"
-         id="layer2-8-16"
-         style="fill:#f9f9f9;display:inline" />
-      <g
-         transform="matrix(0.9469009,0,0,0.94969805,4.1954625,3.7183527)"
-         id="g5267-8"
-         style="fill:#f9f9f9">
-        <g
-           transform="translate(0,86)"
-           id="layer1-2-86"
-           style="fill:#f9f9f9;display:inline" />
-        <g
-           transform="translate(0,50)"
-           id="layer2-6-3"
-           style="fill:#f9f9f9;display:inline" />
-        <g
-           transform="matrix(1.0563632,0,0,1.0519685,-4.4613984,-3.9006075)"
-           id="g4479-5"
-           style="fill:#f9f9f9">
-          <g
-             transform="translate(0,86)"
-             id="layer1-6-4"
-             style="fill:#f9f9f9;display:inline" />
-          <g
-             transform="translate(0,50)"
-             id="layer2-9-2"
-             style="fill:#f9f9f9;display:inline" />
-          <g
-             transform="matrix(1.0550617,0,0,1.0594634,-4.0203092,-4.3441155)"
-             id="g3999-7"
-             style="fill:#f9f9f9">
-            <g
-               transform="translate(0,86)"
-               id="layer1-7-3"
-               style="fill:#f9f9f9;display:inline" />
-            <g
-               transform="translate(0,50)"
-               id="layer2-2-4"
-               style="fill:#f9f9f9;display:inline" />
-            <g
-               transform="matrix(0.73693677,0,0,0.73694734,19.265963,58.207802)"
-               id="layer3-65"
-               style="fill:#f9f9f9;display:inline">
-              <path
-                 d="m 98.909092,49.727272 a 49.545456,49.545456 0 1 1 -99.09091192,0 49.545456,49.545456 0 1 1 99.09091192,0 z"
-                 transform="matrix(1.3972063,0,0,1.3972063,6.7330422,-46.76799)"
-                 id="path2995-8"
-                 style="fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:1.10903525;marker-start:none;marker-mid:none;marker-end:none;display:inline" />
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
-  </g>
+  <ellipse
+     style="opacity:1;fill:#f9f9f9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:7.1808877;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter4320)"
+     id="path4256"
+     cx="75.51284"
+     cy="71.975075"
+     rx="66.151947"
+     ry="66.503616"
+     transform="matrix(0.68849879,0.7772887,-0.77102299,0.68840937,78.185461,-32.288191)" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#333333;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 65.038488,50.869545 9.64651,-7.869525 9.737535,7.959172 -9.737746,7.511349 z"
+     id="path4746"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     style="fill:#1a1a1a;fill-rule:evenodd;stroke:#000000;stroke-width:0.15163355px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 70.902376,46.918099 0,0.8639 3.218484,-0.02979 0.07424,3.062834 -2.851137,-1.978994 -0.06661,5.618808 0.968668,0 0.01768,-3.801649 1.99039,1.300217 0.01358,4.341421 0.886189,-0.004 0.02943,-3.802148 2.602982,2.065111 -0.03125,-5.697152 -0.790631,0.02751 0,3.872641 -1.781101,-1.459686 0,-3.574747 3.093496,0 0,-0.804321 z"
+     id="path4748"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccccccccccccc" />
 </svg>
