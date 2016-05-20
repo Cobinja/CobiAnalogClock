@@ -11,6 +11,7 @@ const UPowerGlib = imports.gi.UPowerGlib;
 const Rsvg = imports.gi.Rsvg;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
+const SignalManager = imports.misc.signalManager;
 
 const UUID = "analog-clock@cobinja.de";
 
@@ -20,68 +21,6 @@ const M_PI = 3.141592654;
 const RAD_PER_DEGREE = M_PI / 180;
 const MARGIN = 5;
 
-function CobiSignalTracker() {
-  this._init();
-}
-
-CobiSignalTracker.prototype = {
-  _init: function() {
-      this._data = [];
-  },
-
-  // params = {
-  //   signalName: Signal Name
-  //   callback: Callback Function
-  //   bind: Context to bind to
-  //   target: target to connect to
-  //}
-  connect: function (params) {
-    let signalName = params["signalName"];
-    let callback = params["callback"];
-    let bind = params["bind"];
-    let target = params["target"];
-    let signalId = null;
-
-    signalId = target.connect(signalName, Lang.bind(bind, callback));
-    this._data.push({
-      signalName: signalName,
-      callback: callback,
-      target: target,
-      signalId: signalId,
-      bind: bind
-    });
-  },
-
-  disconnect: function (params) {
-    for (let i = 0; i < this._data.length; i++) {
-      let data = this._data[i];
-      if (params["signalName"] == data["signalName"] &&
-          params["target"] == data["target"] &&
-          params["callback"] == data["callback"] &&
-          params["bind"] == data["bind"]) {
-        data["target"].disconnect(data["signalId"]);
-        data = null;
-        this._data.splice(i, 1);
-        break;
-      }
-    }
-  },
-
-  disconnectAll: function () {
-    for (let i = 0; i < this._data.length; i++) {
-      let data = this._data[i];
-      data["target"].disconnect(data["signalId"]);
-      data[i] = null;
-    }
-    this._data = [];
-  },
-  
-  destroy: function() {
-    this.disconnectAll();
-    this._data = null;
-  }
-}
-
 function CobiAnalogClockSettings(instanceId) {
   this._init(instanceId);
 }
@@ -89,7 +28,7 @@ function CobiAnalogClockSettings(instanceId) {
 CobiAnalogClockSettings.prototype = {
   _init: function(instanceId) {
     this._instanceId = instanceId;
-    this._signalTracker = new CobiSignalTracker();
+    this._signalManager = new SignalManager.SignalManager(this);
     this.values = {};
     
     let settingsDirName = GLib.get_user_config_dir();
@@ -112,7 +51,7 @@ CobiAnalogClockSettings.prototype = {
     this._upgradeSettings();
     
     this._monitor = this._settingsFile.monitor(Gio.FileMonitorFlags.NONE, null);
-    this._signalTracker.connect({signalName: "changed", callback: Lang.bind(this, this._onSettingsChanged), bind: this, target: this._monitor});
+    this._signalManager.connect(this._monitor, "changed", this._onSettingsChanged);
   },
   
   _getDefaultSettingsFile: function() {
@@ -184,8 +123,7 @@ CobiAnalogClockSettings.prototype = {
   },
   
   destroy: function() {
-    this._signalTracker.disconnectAll();
-    this._signalTracker.destroy();
+    this._signalManager.disconnectAllSignals();
     this._monitor.cancel();
     this.values = null;
   }
@@ -202,8 +140,8 @@ CobiAnalogClock.prototype = {
 
   _init: function(metadata, instanceId){
     Desklet.Desklet.prototype._init.call(this, metadata, instanceId);
-    this._signalTracker = new CobiSignalTracker();
-    this._paintSignals = new CobiSignalTracker();
+    this._signalManager = new SignalManager.SignalManager(this);
+    this._paintSignals = new SignalManager.SignalManager(this);
     this._settings = new CobiAnalogClockSettings(instanceId);
     
     this._displayTime = new GLib.DateTime();
@@ -230,14 +168,14 @@ CobiAnalogClock.prototype = {
     let timeoutMillis = (1000 - currentMillis) % 1000;
     this._timeoutId = Mainloop.timeout_add(timeoutMillis, Lang.bind(this, this._updateClock));
     
-    this._signalTracker.connect({signalName: "size-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onSizeChanged)});
-    this._signalTracker.connect({signalName: "theme-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onThemeChanged)});
-    this._signalTracker.connect({signalName: "hide-decorations-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onHideDecorationsChanged)});
-    this._signalTracker.connect({signalName: "show-seconds-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onShowSecondsChanged)});
+    this._signalManager.connect(this._settings, "size-changed", this._onSizeChanged);
+    this._signalManager.connect(this._settings, "theme-changed", this._onThemeChanged);
+    this._signalManager.connect(this._settings, "hide-decorations-changed", this._onHideDecorationsChanged);
+    this._signalManager.connect(this._settings, "show-seconds-changed", this._onShowSecondsChanged);
     
-    this._signalTracker.connect({signalName: "timezone-use-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneChanged)});
-    this._signalTracker.connect({signalName: "timezone-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneChanged)});
-    this._signalTracker.connect({signalName: "timezone-display-changed", target: this._settings, bind: this, callback: Lang.bind(this, this._onTimezoneDisplayChanged)});
+    this._signalManager.connect(this._settings, "timezone-use-changed", this._onTimezoneChanged);
+    this._signalManager.connect(this._settings, "timezone-changed", this._onTimezoneChanged);
+    this._signalManager.connect(this._settings, "timezone-display-changed", this._onTimezoneDisplayChanged);
     
     this._upClient = new UPowerGlib.Client();
     try {
@@ -301,7 +239,7 @@ CobiAnalogClock.prototype = {
   
   _loadClock: function() {
     let newClock = this._loadTheme();
-    this._paintSignals.disconnectAll();
+    this._paintSignals.disconnectAllSignals();
     this._clock = newClock;
     this._clockActor.remove_all_children();
     this._clockActor.add_actor(this._clock.bottomActor);
@@ -310,8 +248,8 @@ CobiAnalogClock.prototype = {
     this._tzLabel.set_style(this._clock["tz-label"]);
     this._updateTzLabel();
     this._clockActor.add_actor(this._clock.topActor);
-    this._paintSignals.connect({signalName: "repaint", target: this._clock.bottomActor, bind: this, callback: Lang.bind(this, this._onPaintBottomActor)});
-    this._paintSignals.connect({signalName: "repaint", target: this._clock.topActor, bind: this, callback: Lang.bind(this, this._onPaintTopActor)});
+    this._signalManager.connect(this._clock.bottomActor, "repaint", this._onPaintBottomActor);
+    this._signalManager.connect(this._clock.topActor, "repaint", this._onPaintTopActor);
   },
   
   _onThemeChanged: function() {
@@ -501,12 +439,11 @@ CobiAnalogClock.prototype = {
   },
   
   on_desklet_removed: function() {
-    this._paintSignals.disconnectAll();
-    this._paintSignals.destroy();
+    this._paintSignals.disconnectAllSignals();
     if (this._timeoutId != undefined) {
       Mainloop.source_remove(this._timeoutId);
     }
-    this._signalTracker.destroy();
+    this._signalManager.disconnectAllSignals();
     this._settings.destroy();
   }
 }
