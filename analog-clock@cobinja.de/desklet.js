@@ -248,8 +248,8 @@ CobiAnalogClock.prototype = {
     this._tzLabel.set_style(this._clock["tz-label"]);
     this._updateTzLabel();
     this._clockActor.add_actor(this._clock.topActor);
-    this._signalManager.connect(this._clock.bottomActor, "repaint", this._onPaintBottomActor);
-    this._signalManager.connect(this._clock.topActor, "repaint", this._onPaintTopActor);
+    this._paintSignals.connect(this._clock.bottomActor, "repaint", this._onPaintBottomActor);
+    this._paintSignals.connect(this._clock.topActor, "repaint", this._onPaintTopActor);
   },
   
   _onThemeChanged: function() {
