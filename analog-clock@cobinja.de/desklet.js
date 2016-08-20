@@ -416,13 +416,16 @@ CobiAnalogClock.prototype = {
       newTimeoutSeconds = 60 - seconds;
     }
     
-    let hours = this._displayTime.get_hour();
-    let minutes = this._displayTime.get_minute();
-    let seconds = this._displayTime.get_second();
+    let hours = this._displayTime.get_hour() % 12;
+    let minutes = this._displayTime.get_minute() % 60;
+    let seconds = this._displayTime.get_second() % 60;
     
-    if (seconds == 0 || seconds == 60 || this._initialUpdate) {
-      this._clock.hour.actor.set_rotation_angle(Clutter.RotateAxis.Z_AXIS, DEG_PER_HOUR * hours + ((minutes % 60) * 1.0) / 60);
+    if (seconds == 0 || this._initialUpdate) {
+      if (minutes % 2 == 0 || this._initialUpdate) {
+        this._clock.hour.actor.set_rotation_angle(Clutter.RotateAxis.Z_AXIS, DEG_PER_HOUR * hours + (minutes * 0.5));
+      }
       this._clock.minute.actor.set_rotation_angle(Clutter.RotateAxis.Z_AXIS, DEG_PER_SECOND * minutes);
+      this._initialUpdate = false;
     }
     if (this._settings.values["show-seconds"]) {
       this._clock.second.actor.set_rotation_angle(Clutter.RotateAxis.Z_AXIS, DEG_PER_SECOND * seconds);
